@@ -20,6 +20,7 @@ const User = db.User
 const moment = require('moment')
 const { formatMessage, getRoom } = require('./chat')
 const { Op } = require("sequelize")
+const { raw } = require('body-parser')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -107,36 +108,39 @@ io.on('connection', async socket => {
   /** private messge */
   socket.on('privateMessage', async data => {
     const senderId = Number(user.id)
-    const receiverId = data.receiverId
+    let receiverId = data
     let historyMessages
     const room = getRoom(senderId, receiverId)
-
     socket.join(room)
+    console.log(receiverId)
 
-    // find history messages
     await PrivateMessage.findAll({
-      where: { [Op.and]: [{ senderId }, { receiverId }] },
-      include: [{ model: User, as: 'Sender' }, { model: User, as: 'Receiver' }]
-    }).then(data => {
+      where: {
+        [Op.or]:
+          [{ [Op.and]: [{ senderId }, { receiverId }] },
+          { [Op.and]: [{ senderId: receiverId }, { receiverId: senderId }] }],
+      },
+      include: [{ model: User, as: 'Sender' }, { model: User, as: 'Receiver' }],
+    }).then((data) => {
       return historyMessages = data.map(item => ({
         message: item.dataValues.message,
-        name: item.dataValues.User.name,
-        avatar: item.dataValues.User.avatar,
-        currentUser: user.id === item.dataValues.User.id ? true : false,
+        name: item.dataValues.Sender.name,
+        avatar: item.dataValues.Sender.avatar,
+        currentUser: user.id === item.dataValues.Sender.id ? true : false,
         time: moment(item.dataValues.createdAt).format('LT')
       }))
+    }).then((historyMessages) => {
+      io.to(room).emit('privateHistory', historyMessages)
     })
-
-    io.to(room).emit('privateHistory', historyMessages)
 
     // find history messages
     socket.on('sendPrvate', async data => {
-      await PrivateMessage.create({
+      io.to(room).emit('sendPrivate', formatMessage(user.name, data.message, user.avatar, user.currentUser))
+      PrivateMessage.create({
         message: data.message,
         receiverId: data.receiverId,
         senderId
       })
-      io.to(room).emit('sendPrivate', formatMessage(user.name, data.message, user.avatar, user.currentUser))
     })
 
   })
