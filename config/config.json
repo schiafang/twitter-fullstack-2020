@@ -15,11 +15,13 @@
     "logging": false
   },
   "production": {
-    "use_env_variable": "CLEARDB_DATABASE_URL",
+    "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",
     "protocol": "postgres",
-    "ssl": {
-      "rejectUnauthorized": false
+    "dialectOptions": {
+      "ssl": {
+        "rejectUnauthorized": false
+      }
     }
   },
   "travis": {
