@@ -42,7 +42,6 @@ $(function () {
         `
       }
     }
-    console.log(data)
 
     chatContent.scrollTop = chatContent.scrollHeight
   })
