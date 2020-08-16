@@ -60,7 +60,6 @@ io.on('connection', async socket => {
 
   // get current user
   const user = onlineUsers.find(user => user.id === id)
-  user.currentUser = true
 
   // get chat history
   let historyMessages
@@ -87,8 +86,8 @@ io.on('connection', async socket => {
 
   // user emit message to all user 
   socket.on('chat', data => {
-    Message.create({ message: data, UserId: user.id })
-    io.emit('chat', formatMessage(user.name, data, user.avatar, user.currentUser))
+    Message.create({ message: data.message, UserId: user.id })
+    io.emit('chat', formatMessage(user.name, data.message, user.avatar, data.userId))
   })
 
   // listen typing

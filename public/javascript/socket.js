@@ -7,11 +7,17 @@ $(function () {
   const onlineUserColumn = document.querySelector('.online-user-column')
   let onlineUsers = []
 
+  const name = document.querySelector('.user-name').textContent
+  const id = document.querySelector('.user-id').textContent
+  const account = document.querySelector('.user-account').textContent
+  const avatar = document.querySelector('.user-avatar').textContent
+  const user = { name, id, account, avatar }
+
   // emit input message to socket
   chatForm.addEventListener('submit', event => {
     event.preventDefault()
     if (input.value.length === 0) { return false }
-    socket.emit('chat', input.value)
+    socket.emit('chat', { message: input.value, userId: id, isSelf: false })
     socket.emit('typing', { isExist: false })
     input.value = ''
     return false
@@ -54,7 +60,7 @@ $(function () {
 
   // message from user
   socket.on('chat', data => {
-    if (data.currentUser === true) {
+    if (data.currentUser === id) {
       output.innerHTML += `
       <div class="self-message">
           <div class="self-text">${data.message}</div>
