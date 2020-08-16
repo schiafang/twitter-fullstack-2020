@@ -43,7 +43,7 @@ $(function () {
       }
     }
 
-    chatContent.scrollTop = chatContent.scrollHeight
+    mailContent.scrollTop = mailContent.scrollHeight
   })
 
   socket.on('sendPrivate', data => {
