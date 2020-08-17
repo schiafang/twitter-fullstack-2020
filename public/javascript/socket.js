@@ -13,11 +13,13 @@ $(function () {
   const avatar = document.querySelector('.user-avatar').textContent
   const user = { name, id, account, avatar }
 
+  socket.emit('login', user)
+
   // emit input message to socket
   chatForm.addEventListener('submit', event => {
     event.preventDefault()
     if (input.value.length === 0) { return false }
-    socket.emit('chat', { message: input.value, userId: id, isSelf: false })
+    socket.emit('chat', { message: input.value, isSelf: false, id, name, avatar })
     socket.emit('typing', { isExist: false })
     input.value = ''
     return false
@@ -60,6 +62,7 @@ $(function () {
 
   // message from user
   socket.on('chat', data => {
+    console.log(data)
     if (data.currentUser === id) {
       output.innerHTML += `
       <div class="self-message">
@@ -105,12 +108,13 @@ $(function () {
   // listening other users typing
   input.addEventListener('input', (e) => {
     if (e.target.value) {
-      socket.emit('typing', { isExist: true })
+      socket.emit('typing', { isExist: true, name })
     } else {
-      socket.emit('typing', { isExist: false })
+      socket.emit('typing', { isExist: false, name })
     }
   })
   socket.on('typing', data => {
+    console.log(data)
     if (data.isExist) {
       typing.innerHTML = `${data.name} is typing...`
     } else {

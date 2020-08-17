@@ -11,7 +11,7 @@ $(function () {
   const avatar = document.querySelector('.user-avatar').textContent
   const user = { name, id, account, avatar }
 
-  socket.emit('privateMessage', receiverId)
+  socket.emit('privateMessage', { receiverId, user })
 
   // emit input message to socket
   mailForm.addEventListener('submit', event => {

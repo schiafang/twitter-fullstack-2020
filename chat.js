@@ -20,17 +20,4 @@ module.exports = {
 
     return room
   }
-  // getHistoryMessage(user) {
-  //   let historyMessages = []
-  //   return Message.findAll({ include: [User], order: [['createdAt', 'DESC']] })
-  //     .then(data => {
-  //       return historyMessages = data.map(item => ({
-  //         message: item.dataValues.message,
-  //         name: item.dataValues.User.name,
-  //         avatar: item.dataValues.User.avatar,
-  //         currentUser: user.id === item.dataValues.User.id ? true : false,
-  //         time: moment(item.dataValues.createdAt).format('LT')
-  //       }))
-  //     })
-  // }
 }

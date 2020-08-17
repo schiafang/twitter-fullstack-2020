@@ -1,12 +1,11 @@
 <div class="container-fluid">
   {{> left-content}}
 
+  {{#if pageUser}}
   <div class="mailbox-content">
     <div class="main-title">
       傳送私人訊息給
-      {{#if pageUser}}
       {{pageUser.name}} <code>@{{pageUser.account}}</code>
-      {{/if}}
     </div>
 
     <div class="mail-main">
@@ -28,10 +27,12 @@
       </form>
     </div>
   </div>
+  {{/if}}
+
 
   <div class="mailbox-user-content">
     <div class="title">
-      私人訊息
+      收件者
     </div>
 
     <div class="mailbox-user-column">
