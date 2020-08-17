@@ -125,7 +125,7 @@ io.on('connection', async socket => {
         message: item.dataValues.message,
         name: item.dataValues.Sender.name,
         avatar: item.dataValues.Sender.avatar,
-        currentUser: user.id === item.dataValues.Sender.id ? true : false,
+        currentUser: item.dataValues.Sender.id,
         time: moment(item.dataValues.createdAt).format('LT')
       }))
     }).then((historyMessages) => {
@@ -134,7 +134,7 @@ io.on('connection', async socket => {
 
     // find history messages
     socket.on('sendPrvate', async data => {
-      io.to(room).emit('sendPrivate', formatMessage(user.name, data.message, user.avatar, user.currentUser))
+      io.to(room).emit('sendPrivate', formatMessage(user.name, data.message, user.avatar, data.senderId))
       PrivateMessage.create({
         message: data.message,
         receiverId: data.receiverId,

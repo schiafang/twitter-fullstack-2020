@@ -57,6 +57,14 @@
   </div>
 
 </div>
+{{#if user}}
+<div style="display:none">
+  <div class="user-id">{{user.id}}</div>
+  <div class="user-name">{{user.name}}</div>
+  <div class="user-account">{{user.account}}</div>
+  <div class="user-avatar">{{user.avatar}}</div>
+</div>
+{{/if}}
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

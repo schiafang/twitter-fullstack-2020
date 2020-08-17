@@ -5,6 +5,11 @@ $(function () {
   const mailContent = document.querySelector('.mail-main')
   const output = document.querySelector('#output-mail')
   const receiverId = Number(location.pathname.slice(9, 20))
+  const name = document.querySelector('.user-name').textContent
+  const id = document.querySelector('.user-id').textContent
+  const account = document.querySelector('.user-account').textContent
+  const avatar = document.querySelector('.user-avatar').textContent
+  const user = { name, id, account, avatar }
 
   socket.emit('privateMessage', receiverId)
 
@@ -13,15 +18,14 @@ $(function () {
     event.preventDefault()
     if (input.value.length === 0) { return false }
     const message = input.value
-    console.log(input)
-    socket.emit('sendPrvate', { message, receiverId })
+    socket.emit('sendPrvate', { message, receiverId, senderId: id })
     input.value = ''
     return false
   })
 
   socket.on('privateHistory', data => {
     for (let i = 0; i < data.length; i++) {
-      if (data[i].currentUser === true) {
+      if (data[i].currentUser === Number(id)) {
         output.innerHTML += `
         <div class="self-message">
             <div class="self-text">${data[i].message}</div>
@@ -47,7 +51,7 @@ $(function () {
   })
 
   socket.on('sendPrivate', data => {
-    if (data.currentUser === true) {
+    if (data.currentUser === id) {
       output.innerHTML += `
       <div class="self-message">
           <div class="self-text">${data.message}</div>
